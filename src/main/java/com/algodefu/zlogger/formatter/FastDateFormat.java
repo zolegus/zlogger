@@ -28,6 +28,9 @@ import java.util.*;
  *
  * Взято у TeaTrove project
  */
+/**
+ * @author oleg.zherebkin
+ */
 public class FastDateFormat {
 
 	/**

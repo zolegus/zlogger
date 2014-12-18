@@ -8,6 +8,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 
+/**
+ * @author oleg.zherebkin
+ */
 public class BufferFormatter {
 
 	private static final boolean USE_DIRECT_BUFFER = Boolean.parseBoolean( System.getProperty( "zlogger.direct", "true" ) );
