@@ -15,14 +15,15 @@ import java.util.concurrent.atomic.AtomicReference;
 public final class ZLoggerFactory {
 
     private final Object lock = new Object();
-    private Chronicle chronicle;
     private final AtomicReference<LoggerConfiguration> loggerConfiguration;
     private final ThreadLocal<Map<String, ZLogger>> classedLoggers;
     private final ThreadLocal<ExcerptAppender> threadAppender;
+    private final AtomicReference<Chronicle> chronicle;
 
-    private ZLoggerFactory(){
+    private ZLoggerFactory() {
         this.loggerConfiguration = new AtomicReference<LoggerConfiguration>();
-        this.classedLoggers = new ThreadLocal<Map<String, ZLogger>>(){
+        this.chronicle = new AtomicReference<Chronicle>();
+        this.classedLoggers = new ThreadLocal<Map<String, ZLogger>>() {
             @Override
             protected Map<String, ZLogger> initialValue() {
                 return new HashMap<String, ZLogger>();
@@ -43,39 +44,20 @@ public final class ZLoggerFactory {
 //        };
     }
 
-    private ZLogger get(final Class clazz){
-        return getLogger(clazz.getSimpleName());//, classedLoggers);
-    }
-
-    public static ZLogger getLogger(final Class clazz){
+    public static ZLogger getLogger(final Class clazz) {
         return Helper.FACTORY.get(clazz);
     }
 
-    public ZLogger getLogger(final String className) {
-        final Map<String, ZLogger> map = classedLoggers.get();
-        ZLogger logger = map.get(className);
-        if (logger == null) {
-            if (threadAppender.get() == null)
-                try {
-                    threadAppender.set(this.chronicle.createAppender());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            logger = new ZLogger(threadAppender.get(), loggerConfiguration.get().getLevel(), className);
-            map.put(className, logger);
-        }
-        return logger;
-    }
-
-    public static void stop(){
+    public static void stop() {
         synchronized (Helper.FACTORY.lock) {
             try {
-                if (Helper.FACTORY.chronicle != null)
-                    Helper.FACTORY.chronicle.close();
+                if (Helper.FACTORY.chronicle.get() != null)
+                    Helper.FACTORY.chronicle.get().close();
+                Helper.FACTORY.classedLoggers.get().clear();
+                Helper.FACTORY.threadAppender.set(null);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //TODO method stop implementation
         }
     }
 
@@ -85,9 +67,29 @@ public final class ZLoggerFactory {
             if (configuration == null)
                 throw new IllegalArgumentException("Not a null logger configuration is expected");
             Helper.FACTORY.loggerConfiguration.set(configuration);
-            Helper.FACTORY.chronicle = ChronicleQueueBuilder.VanillaChronicleQueueBuilder.vanilla(configuration.getBasePath()).build();
+            Helper.FACTORY.chronicle.set(ChronicleQueueBuilder.VanillaChronicleQueueBuilder.vanilla(configuration.getBasePath()).build());
         }
         return Helper.FACTORY;
+    }
+
+    private ZLogger get(final Class clazz) {
+        return getLogger(clazz.getSimpleName());//, classedLoggers);
+    }
+
+    public ZLogger getLogger(final String className) {
+        final Map<String, ZLogger> map = classedLoggers.get();
+        ZLogger logger = map.get(className);
+        if (logger == null) {
+            if (threadAppender.get() == null)
+                try {
+                    threadAppender.set(this.chronicle.get().createAppender());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            logger = new ZLogger(threadAppender.get(), loggerConfiguration.get().getLevel(), className);
+            map.put(className, logger);
+        }
+        return logger;
     }
 
     private final static class Helper {

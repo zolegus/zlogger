@@ -2,6 +2,8 @@ package com.algodefu.zlogger;
 
 import com.algodefu.zlogger.reader.ChronicleLogReader;
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -15,20 +17,22 @@ import static com.algodefu.zlogger.util.FileCommon.removePath;
  * @author oleg.zherebkin
  */
 public class ZLoggerMTPerfTest extends TestCase {
-        public static final String BASE_PATH = "./testlogs";
+    private final String BASE_PATH = "./testlogs";
 
-        public void setUp() throws Exception {
-            LoggerConfiguration loggerConfiguration = new LoggerConfiguration();
-            loggerConfiguration.setBasePath(BASE_PATH);
-            loggerConfiguration.setLevel(ZLogLevel.INFO);
-            ZLoggerFactory.init(loggerConfiguration);
-        }
+    @Before
+    public void setUp() throws Exception {
+        LoggerConfiguration loggerConfiguration = new LoggerConfiguration();
+        loggerConfiguration.setBasePath(BASE_PATH);
+        loggerConfiguration.setLevel(ZLogLevel.INFO);
+        ZLoggerFactory.init(loggerConfiguration);
+    }
 
-        public void tearDown() throws Exception {
-            ZLoggerFactory.stop();
-            if (removePath(BASE_PATH) > 0)
-                System.out.printf("Files %s removed",BASE_PATH);
-        }
+    @After
+    public void tearDown() throws Exception {
+        ZLoggerFactory.stop();
+        if (removePath(BASE_PATH) > 0)
+            System.out.printf("Files %s removed\n", BASE_PATH);
+    }
 
     @Test
     public void testMultiThreadLogging() throws IOException, InterruptedException {
@@ -61,6 +65,7 @@ public class ZLoggerMTPerfTest extends TestCase {
         System.out.printf("Total average time is %.3f us per entry\n", averageTotal / count);
         ChronicleLogReader reader = new ChronicleLogReader(BASE_PATH);
         System.out.println(reader.printToString());
+        reader.close();
     }
 
     protected final class RunnableLogger implements Runnable {
@@ -72,7 +77,7 @@ public class ZLoggerMTPerfTest extends TestCase {
 
         @Override
         public void run() {
-            final ZLogger logger = ZLoggerFactory.getLogger(ZLoggerSingleTest.class);
+            final ZLogger logger = ZLoggerFactory.getLogger(this.getClass());
             String message = "Test message";
             for (int i = 0; i < this.runs; i++) {
                 logger.info().append(message).commit();

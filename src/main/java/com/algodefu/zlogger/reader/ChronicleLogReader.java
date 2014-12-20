@@ -17,10 +17,11 @@ public class ChronicleLogReader {
     public static final String TMPDIR = System.getProperty("java.io.tmpdir");
     public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
     public static final String DLM = " | ";
-    private String basePath = "./logs";
     private final Chronicle chronicle;
+    private String basePath = "./logs";
 
     public ChronicleLogReader(String basePath) throws IOException {
+        this.basePath = basePath;
         chronicle = ChronicleQueueBuilder.VanillaChronicleQueueBuilder.vanilla(basePath).build();
     }
 
@@ -34,7 +35,7 @@ public class ChronicleLogReader {
                     .append(ZLogLevel.values()[reader.readInt()].toString()).append(DLM)
                     .append(reader.readUTF()).append(DLM)
                     .append(reader.readUTF()).append(DLM);
-            while(reader.remaining()>0)
+            while (reader.remaining() > 0)
                 sb.append(reader.readLine());
             reader.finish();
             sb.append(NEWLINE);

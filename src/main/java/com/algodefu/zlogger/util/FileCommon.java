@@ -16,10 +16,10 @@ public final class FileCommon {
                 if (file.isDirectory()) counter += emptyFolder(file, ignoreCannotDel);
                 boolean result = file.delete();
                 if (!result && !ignoreCannotDel) {
-                    if(!ignoreCannotDel) {
+                    if (!ignoreCannotDel) {
                         throw new IOException("Cannot delete " + file.getAbsolutePath());
                     } else {
-                        file.deleteOnExit() ;
+                        file.deleteOnExit();
                     }
                 } else {
                     counter++;
@@ -45,7 +45,7 @@ public final class FileCommon {
         return counter;
     }
 
-    static public int removePath (String path) throws Exception {
+    static public int removePath(String path) throws Exception {
         int counter = 0;
         File file = new File(path);
         if (file.exists())

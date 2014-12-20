@@ -24,41 +24,23 @@ import net.openhft.lang.io.RandomDataOutput;
 import net.openhft.lang.model.constraints.NotNull;
 
 public enum ZLogLevel {
-    ERROR(50,"ERROR"),
-    WARN (40,"WARN" ),
-    INFO (30,"INFO" ),
-    DEBUG(20,"DEBUG"),
-    TRACE(10,"TRACE");
+    ERROR(50, "ERROR"),
+    WARN(40, "WARN"),
+    INFO(30, "INFO"),
+    DEBUG(20, "DEBUG"),
+    TRACE(10, "TRACE");
 
     /**
      * Array is not cached in Java enum internals, make the single copy to prevent garbage creation
      */
     private static final ZLogLevel[] VALUES = values();
-
+    private static final int CASE_DIFF = 'A' - 'a';
     private final int levelInt;
     private final String levelStr;
-    private static final int CASE_DIFF = 'A' - 'a';
 
     ZLogLevel(int levelInt, String levelStr) {
         this.levelInt = levelInt;
         this.levelStr = levelStr;
-    }
-
-    public boolean isHigherOrEqualTo(final ZLogLevel presumablyLowerLevel) {
-        return levelInt >= presumablyLowerLevel.levelInt;
-    }
-
-    public void printTo(final ByteStringAppender appender) {
-        appender.append(levelStr);
-    }
-
-    public void writeTo(final RandomDataOutput out) {
-        out.writeByte(ordinal());
-    }
-
-    @Override
-    public String toString() {
-        return levelStr;
     }
 
     public static ZLogLevel readBinary(final RandomDataInput in) {
@@ -81,7 +63,7 @@ public enum ZLogLevel {
      *
      * @param upperCase string of A-Z characters
      * @param other     a {@code CharSequence} to compare
-     * @return          {@code true} if {@code upperCase} and {@code other} equals ignore case
+     * @return {@code true} if {@code upperCase} and {@code other} equals ignore case
      */
     public static boolean fastEqualsIgnoreCase(@NotNull String upperCase, @NotNull CharSequence other) {
         int l;
@@ -96,5 +78,22 @@ public enum ZLogLevel {
             }
         }
         return true;
+    }
+
+    public boolean isHigherOrEqualTo(final ZLogLevel presumablyLowerLevel) {
+        return levelInt >= presumablyLowerLevel.levelInt;
+    }
+
+    public void printTo(final ByteStringAppender appender) {
+        appender.append(levelStr);
+    }
+
+    public void writeTo(final RandomDataOutput out) {
+        out.writeByte(ordinal());
+    }
+
+    @Override
+    public String toString() {
+        return levelStr;
     }
 }

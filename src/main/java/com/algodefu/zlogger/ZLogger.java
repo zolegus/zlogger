@@ -1,6 +1,5 @@
 package com.algodefu.zlogger;
 
-import com.algodefu.zlogger.alternative.ZLog;
 import net.openhft.chronicle.ExcerptAppender;
 
 /**
