@@ -44,7 +44,7 @@ public final class ZLoggerFactory {
     }
 
     private ZLogger get(final Class clazz){
-        return getLogger(clazz.getName());//, classedLoggers);
+        return getLogger(clazz.getSimpleName());//, classedLoggers);
     }
 
     public static ZLogger getLogger(final Class clazz){
