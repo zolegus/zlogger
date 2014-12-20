@@ -14,6 +14,7 @@ public class ZLogger {
     private String className;
     private ZLogEntry logEntry;
     private ZLogEntry nullLogEntry = new NullLogEntry();
+    private String threadID = Thread.currentThread().getName();
 
     public ZLogger(ExcerptAppender appender, ZLogLevel logLevel, String className) {
         this.appender = appender;
@@ -30,7 +31,7 @@ public class ZLogger {
         appender.writeLong(System.currentTimeMillis());
         appender.writeInt(level.ordinal());
         //TODO threadID more quickly
-        appender.writeUTF(Thread.currentThread().getName());
+        appender.writeUTF(threadID);
         appender.writeUTF(className);
         return this.logEntry;
     }
