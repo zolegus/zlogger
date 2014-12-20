@@ -1,4 +1,4 @@
-package com.algodefu.zlogger;
+package com.algodefu.zlogger.alternative;
 
 /**
  * @author oleg.zherebkin
@@ -22,11 +22,6 @@ public class NullLogEntry implements ZLogEntry {
 
 	@Override
 	public ZLogEntry append(final CharSequence csq, final int start, final int end) {
-		return this;
-	}
-
-	@Override
-	public ZLogEntry append(String string) {
 		return this;
 	}
 
@@ -67,6 +62,11 @@ public class NullLogEntry implements ZLogEntry {
 
 	@Override
 	public ZLogEntry append(Throwable e) {
+		return this;
+	}
+
+	@Override
+	public ZLogEntry append(Loggable loggable) {
 		return this;
 	}
 
@@ -127,6 +127,11 @@ public class NullLogEntry implements ZLogEntry {
 
 	@Override
 	public void appendLast(Throwable e) {
+		// nothing
+	}
+
+	@Override
+	public void appendLast(Loggable loggable) {
 		// nothing
 	}
 
