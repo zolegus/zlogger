@@ -18,6 +18,8 @@ public interface ZLogEntry extends Appendable {
 	@Override
 	ZLogEntry append(CharSequence csq, int start, int end);
 
+	ZLogEntry append(String string);
+
 	ZLogEntry append(boolean b);
 
 	ZLogEntry append(int i);
@@ -49,10 +51,8 @@ public interface ZLogEntry extends Appendable {
 
 	ZLogEntry append(Throwable e);
 
-	ZLogEntry append(Loggable loggable);
-
 	/**
-	 * appends an object using {@link ObjectFormatter} if it is available for object's class.
+	 * appends an object using {@link com.algodefu.zlogger.alternative.ObjectFormatter} if it is available for object's class.
 	 * Otherwise <code>toString()</code> method will be used. It leads to garbage footprint !
 	 *
 	 * @param o
@@ -106,10 +106,8 @@ public interface ZLogEntry extends Appendable {
 
 	void appendLast(Throwable e);
 
-	void appendLast(Loggable loggable);
-
 	/**
-	 * appends last an object using {@link ObjectFormatter} if it is available for object's class.
+	 * appends last an object using {@link com.algodefu.zlogger.alternative.ObjectFormatter} if it is available for object's class.
 	 * Otherwise <code>toString()</code> method will be used. It leads to garbage footprint !
 	 *
 	 * @param o

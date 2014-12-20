@@ -1,20 +1,33 @@
-package com.algodefu.zlogger.chronicle;
+package com.algodefu.zlogger;
 
-import com.algodefu.zlogger.Loggable;
-import com.algodefu.zlogger.ZLogEntry;
+import net.openhft.chronicle.ExcerptAppender;
 
 /**
  * @author oleg.zherebkin
  */
-public class ChronicleEntry implements ZLogEntry {
+public class ZLogEntryImpl implements ZLogEntry {
+    private ExcerptAppender excerptAppender;
+
+    public ZLogEntryImpl(ExcerptAppender excerptAppender) {
+        this.excerptAppender = excerptAppender;
+    }
+
+    @Override
+    public ZLogEntryImpl append(String value) {
+        excerptAppender.append(value);
+        return this;
+    }
+
     @Override
     public ZLogEntry append(char c) {
-        return null;
+        excerptAppender.append(c);
+        return this;
     }
 
     @Override
     public ZLogEntry append(CharSequence csq) {
-        return null;
+        excerptAppender.append(csq);
+        return this;
     }
 
     @Override
@@ -24,22 +37,26 @@ public class ChronicleEntry implements ZLogEntry {
 
     @Override
     public ZLogEntry append(boolean b) {
-        return null;
+        excerptAppender.append(b);
+        return this;
     }
 
     @Override
     public ZLogEntry append(int i) {
-        return null;
+        excerptAppender.append(i);
+        return this;
     }
 
     @Override
     public ZLogEntry append(long i) {
-        return null;
+        excerptAppender.append(i);
+        return this;
     }
 
     @Override
     public ZLogEntry append(double i) {
-        return null;
+        excerptAppender.append(i);
+        return this;
     }
 
     @Override
@@ -59,11 +76,6 @@ public class ChronicleEntry implements ZLogEntry {
 
     @Override
     public ZLogEntry append(Throwable e) {
-        return null;
-    }
-
-    @Override
-    public ZLogEntry append(Loggable loggable) {
         return null;
     }
 
@@ -128,17 +140,11 @@ public class ChronicleEntry implements ZLogEntry {
     }
 
     @Override
-    public void appendLast(Loggable loggable) {
-
-    }
-
-    @Override
     public void appendLast(Object o) {
 
     }
 
-    @Override
     public void commit() {
-
+        excerptAppender.finish();
     }
 }

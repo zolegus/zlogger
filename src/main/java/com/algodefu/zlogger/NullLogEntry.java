@@ -26,6 +26,11 @@ public class NullLogEntry implements ZLogEntry {
 	}
 
 	@Override
+	public ZLogEntry append(String string) {
+		return this;
+	}
+
+	@Override
 	public ZLogEntry append(final boolean b) {
 		return this;
 	}
@@ -62,11 +67,6 @@ public class NullLogEntry implements ZLogEntry {
 
 	@Override
 	public ZLogEntry append(Throwable e) {
-		return this;
-	}
-
-	@Override
-	public ZLogEntry append(Loggable loggable) {
 		return this;
 	}
 
@@ -127,11 +127,6 @@ public class NullLogEntry implements ZLogEntry {
 
 	@Override
 	public void appendLast(Throwable e) {
-		// nothing
-	}
-
-	@Override
-	public void appendLast(Loggable loggable) {
 		// nothing
 	}
 
