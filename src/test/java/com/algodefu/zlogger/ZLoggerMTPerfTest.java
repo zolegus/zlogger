@@ -70,6 +70,12 @@ public class ZLoggerMTPerfTest extends TestCase {
 
     protected final class RunnableLogger implements Runnable {
         private final int runs;
+        private final ThreadLocal<ZLogger> logger = new ThreadLocal<ZLogger>() {
+            @Override
+            protected ZLogger initialValue() {
+                return ZLoggerFactory.getLogger(RunnableLogger.class);
+            }
+        };
 
         public RunnableLogger(int runs, int pad) throws IOException {
             this.runs = runs;
@@ -77,10 +83,9 @@ public class ZLoggerMTPerfTest extends TestCase {
 
         @Override
         public void run() {
-            final ZLogger logger = ZLoggerFactory.getLogger(this.getClass());
             String message = "Test message";
             for (int i = 0; i < this.runs; i++) {
-                logger.info().append(message).commit();
+                logger.get().info().append(message).commit();
             }
             System.out.println("Thread RunnableLogger finished!");
         }
