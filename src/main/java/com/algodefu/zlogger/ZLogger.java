@@ -13,7 +13,7 @@ public class ZLogger {
     private String className;
     private ZLogEntry logEntry;
     private ZLogEntry nullLogEntry = new NullLogEntry();
-    private String threadID = Thread.currentThread().getName();
+    private String threadName = Thread.currentThread().getName();
 
     public ZLogger(ExcerptAppender appender, ZLogLevel logLevel, String className) {
         this.appender = appender;
@@ -29,8 +29,7 @@ public class ZLogger {
         // MESSAGE FORMAT [timestamp] [type_id] [thread_id] [className] [textMessage]
         appender.writeLong(System.currentTimeMillis());
         appender.writeInt(level.ordinal());
-        //TODO threadID more quickly
-        appender.writeUTF(threadID);
+        appender.writeUTF(threadName);
         appender.writeUTF(className);
         return this.logEntry;
     }
