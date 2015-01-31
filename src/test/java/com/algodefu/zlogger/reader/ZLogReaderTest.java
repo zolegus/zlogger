@@ -8,8 +8,6 @@ import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
-
 import static com.algodefu.zlogger.util.FileCommon.removePath;
 
 public class ZLogReaderTest extends TestCase {
@@ -62,7 +60,7 @@ public class ZLogReaderTest extends TestCase {
         }
         // Читаем из лога
         ZLogReader reader = new ZLogReader(BASE_PATH);
-        String[] logMessages = reader.search(startTime, stopTime, ZLogLevel.TRACE, "", "" ,"");
+        String[] logMessages = reader.search(startTime, stopTime, ZLogLevel.TRACE, "", "" ,"", 50);
         assertEquals(5, logMessages.length);
         for (int i = 0; i < logMessages.length; i++) {
 //            System.out.println(logMessages[i]);
@@ -83,11 +81,11 @@ public class ZLogReaderTest extends TestCase {
         }
         // Читаем из лога
         ZLogReader reader = new ZLogReader(BASE_PATH);
-        assertEquals(50, reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "", "").length);
-        assertEquals(40, reader.search(0, Long.MAX_VALUE, ZLogLevel.DEBUG, "", "", "").length);
-        assertEquals(30, reader.search(0, Long.MAX_VALUE, ZLogLevel.INFO, "", "", "").length);
-        assertEquals(20, reader.search(0, Long.MAX_VALUE, ZLogLevel.WARN, "", "", "").length);
-        assertEquals(10, reader.search(0, Long.MAX_VALUE, ZLogLevel.ERROR, "", "", "").length);
+        assertEquals(50, reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "", "", 50).length);
+        assertEquals(40, reader.search(0, Long.MAX_VALUE, ZLogLevel.DEBUG, "", "", "", 50).length);
+        assertEquals(30, reader.search(0, Long.MAX_VALUE, ZLogLevel.INFO, "", "", "", 50).length);
+        assertEquals(20, reader.search(0, Long.MAX_VALUE, ZLogLevel.WARN, "", "", "", 50).length);
+        assertEquals(10, reader.search(0, Long.MAX_VALUE, ZLogLevel.ERROR, "", "", "", 50).length);
     }
 
     @Test
@@ -103,9 +101,9 @@ public class ZLogReaderTest extends TestCase {
         }
         // Читаем из лога
         ZLogReader reader = new ZLogReader(BASE_PATH);
-        assertEquals(50, reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "", "test#").length);
-        assertEquals(10, reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "", "Error").length);
-        assertEquals(0, reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "", "Check").length);
+        assertEquals(50, reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "", "test#", 50).length);
+        assertEquals(10, reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "", "Error", 50).length);
+        assertEquals(0, reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "", "Check", 50).length);
     }
 
     @Test
@@ -117,8 +115,8 @@ public class ZLogReaderTest extends TestCase {
         }
         // Читаем из лога
         ZLogReader reader = new ZLogReader(BASE_PATH);
-        assertEquals(10, reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "ZLogReaderTest", "").length);
-        assertEquals(0, reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "Object", "").length);
+        assertEquals(10, reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "ZLogReaderTest", "", 50).length);
+        assertEquals(0, reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "Object", "", 50).length);
     }
 
     @Test
@@ -130,7 +128,7 @@ public class ZLogReaderTest extends TestCase {
         }
         // Читаем из лога
         ZLogReader reader = new ZLogReader(BASE_PATH);
-        assertEquals(50, reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "", "").length);
+        assertEquals(50, reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "", "", 50).length);
         assertEquals(50, reader.next().length);
         assertEquals(10, reader.next().length);
         assertEquals(0, reader.next().length);

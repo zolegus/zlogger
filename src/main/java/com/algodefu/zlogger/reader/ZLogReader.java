@@ -25,7 +25,6 @@ public class ZLogReader {
     //SEARCH PARAMETERS
     private long beginTimestamp;
     private long endTimestamp;
-    private int pageNumber;
     private int pageSize;
     private ZLogLevel logLevel;
     private String threadName;
@@ -55,7 +54,6 @@ public class ZLogReader {
         beginTimestamp = 0;
         endTimestamp = Long.MAX_VALUE;
         logLevel = ZLogLevel.TRACE;
-        pageNumber = 1;
         pageSize = MAX_PAGE_SIZE;
         threadName = "";
         className = "";
@@ -63,26 +61,29 @@ public class ZLogReader {
         return search(pageSize);
     }
 
+    /**
+     * Продолжить последний поиск
+     */
+    public String[] next() {
+        return search(pageSize);
+    }
+
+
     public String[] search(long searchBeginTimestamp, long searchEndTimestamp, ZLogLevel searchLogLevel,
-                           String searchThreadName, String searchClassName, String searchTextMessage) {
+                           String searchThreadName, String searchClassName, String searchTextMessage, int searchPageSize) {
         // Выставляем маркер на начало
         reader.toStart();
         // Инициализируем параметры поиска
         beginTimestamp = searchBeginTimestamp;
         endTimestamp = searchEndTimestamp;
         logLevel = searchLogLevel;
-        pageNumber = 1;
-        pageSize = MAX_PAGE_SIZE;
+        if (searchPageSize > MAX_PAGE_SIZE)
+            pageSize = MAX_PAGE_SIZE;
+        else
+            pageSize = searchPageSize;
         threadName = searchThreadName;
         className = searchClassName;
         textMessage = searchTextMessage;
-        return search(pageSize);
-    }
-
-    /**
-     * Продолжить последний поиск
-     */
-    public String[] next() {
         return search(pageSize);
     }
 
