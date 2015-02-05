@@ -42,7 +42,7 @@ public class ZLoggerOneThreadMultiClassTest extends TestCase {
         logger = ZLoggerFactory.getLogger(Class.class);
         logger.info().append("Test message!").commit();
         ChronicleLogReader reader = new ChronicleLogReader(BASE_PATH);
-        System.out.println(reader.printToString());
+        System.out.println(reader.printToString(false));
         reader.close();
     }
 }

@@ -64,7 +64,7 @@ public class ZLoggerMTPerfTest extends TestCase {
         }
         System.out.printf("Total average time is %.3f us per entry\n", averageTotal / count);
         ChronicleLogReader reader = new ChronicleLogReader(BASE_PATH);
-        System.out.println(reader.printToString());
+        System.out.println(reader.printToString(false));
         reader.close();
     }
 

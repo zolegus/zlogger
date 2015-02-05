@@ -3,9 +3,11 @@ package com.algodefu.zlogger.reader;
 import com.algodefu.zlogger.ZLogLevel;
 import net.openhft.chronicle.Chronicle;
 import net.openhft.chronicle.ChronicleQueueBuilder;
+import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.ExcerptTailer;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 
 /**
@@ -25,9 +27,10 @@ public class ChronicleLogReader {
         chronicle = ChronicleQueueBuilder.VanillaChronicleQueueBuilder.vanilla(basePath).build();
     }
 
-    public String printToString() throws IOException {
+    public String printToString(boolean convertToUnicode) throws IOException {
         ExcerptTailer reader = chronicle.createTailer();
         reader.toStart();
+        ByteBuffer bb = ByteBuffer.allocate(4*1024);
 
         StringBuilder sb = new StringBuilder(BUFFER_SIZE);
         while (reader.nextIndex()) {
@@ -35,9 +38,19 @@ public class ChronicleLogReader {
                     .append(ZLogLevel.values()[reader.readInt()].toString()).append(DLM)
                     .append(reader.readUTF()).append(DLM)
                     .append(reader.readUTF()).append(DLM);
+            bb.clear();
             while (reader.remaining() > 0)
-                sb.append(reader.readLine());
+                if (convertToUnicode)
+                    reader.read(bb);
+                else
+                    sb.append(reader.readLine());
             reader.finish();
+            if (convertToUnicode) {
+                bb.flip();
+                byte[] bytes = new byte[bb.remaining()];
+                bb.get(bytes);
+                sb.append(new String(bytes, "UTF-8"));
+            }
             sb.append(NEWLINE);
             if (sb.length() >= BUFFER_SIZE)
                 return "There is not possible out all data. There are too much.";
