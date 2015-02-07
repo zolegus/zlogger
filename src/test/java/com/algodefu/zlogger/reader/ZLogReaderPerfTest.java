@@ -29,10 +29,12 @@ public class ZLogReaderPerfTest {
         long time = System.currentTimeMillis() - start;
         System.out.printf("Заполнено %d за %.3f s\n", msgAmount, time / 1e3);
 
+//        for profiling
 //        System.in.read();
         int n = 0;
         int msgFound = 0;
         ZLogReader reader = new ZLogReader(BASE_PATH);
+//        reader.setUnicode(true);
         start = System.currentTimeMillis();
         n = reader.search(0, Long.MAX_VALUE, ZLogLevel.TRACE, "", "", "", 1).length;
         while (n > 0) {

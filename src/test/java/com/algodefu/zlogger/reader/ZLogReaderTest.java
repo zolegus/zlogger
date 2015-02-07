@@ -12,6 +12,7 @@ import static com.algodefu.zlogger.util.FileCommon.removePath;
 
 public class ZLogReaderTest extends TestCase {
     private final String BASE_PATH = "./testlogs";
+
     @Override
     public void setUp() throws Exception {
         LoggerConfiguration loggerConfiguration = new LoggerConfiguration();
@@ -24,7 +25,7 @@ public class ZLogReaderTest extends TestCase {
     @After
     public void tearDown() throws Exception {
         ZLoggerFactory.stop();
-        if (removePath(BASE_PATH) > 0);
+        if (removePath(BASE_PATH) > 0) ;
 //            System.out.printf("Files %s removed\n", BASE_PATH);
     }
 
@@ -60,11 +61,11 @@ public class ZLogReaderTest extends TestCase {
         }
         // Читаем из лога
         ZLogReader reader = new ZLogReader(BASE_PATH);
-        String[] logMessages = reader.search(startTime, stopTime, ZLogLevel.TRACE, "", "" ,"", 50);
+        String[] logMessages = reader.search(startTime, stopTime, ZLogLevel.TRACE, "", "", "", 50);
         assertEquals(5, logMessages.length);
         for (int i = 0; i < logMessages.length; i++) {
 //            System.out.println(logMessages[i]);
-            assertEquals(("Infotest#" + (i+2)), logMessages[i].split(" \\| ")[4]);
+            assertEquals(("Infotest#" + (i + 2)), logMessages[i].split(" \\| ")[4]);
         }
     }
 
@@ -132,5 +133,21 @@ public class ZLogReaderTest extends TestCase {
         assertEquals(50, reader.next().length);
         assertEquals(10, reader.next().length);
         assertEquals(0, reader.next().length);
+    }
+
+    @Test
+    public void testUnicodeSearch() throws Exception {
+        String utf8Message = "Тестовое сообщение #";
+        ZLogger logger = ZLoggerFactory.getLogger(ZLogReaderTest.class);
+        // Пишем в лог
+        for (int i = 0; i < 10; i++)
+            logger.info().append(utf8Message).append(i).commit();
+        // Читаем из лога
+        ZLogReader reader = new ZLogReader(BASE_PATH);
+        reader.setUnicode(true);
+        String[] logMessages = reader.search();
+        assertEquals(10, logMessages.length);
+        for (int i = 0; i < logMessages.length; i++)
+            assertEquals((utf8Message + i), logMessages[i].split(" \\| ")[4]);
     }
 }

@@ -6,6 +6,8 @@ import net.openhft.chronicle.ChronicleQueueBuilder;
 import net.openhft.chronicle.ExcerptTailer;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 
 /**
@@ -19,6 +21,7 @@ public class ZLogReader {
     public static final int LOG_MESSAGE_SIZE = 4 * 1024;
     private final StringBuilder[] tempStringBuffer = new StringBuilder[MAX_PAGE_SIZE];
     private StringBuilder tempSB = new StringBuilder(LOG_MESSAGE_SIZE);
+    private ByteBuffer unicodeByteBuffer = ByteBuffer.allocate(LOG_MESSAGE_SIZE);
     private String storagePath;
     private Chronicle chronicle;
     private ExcerptTailer reader;
@@ -35,6 +38,7 @@ public class ZLogReader {
     private String curThreadName;
     private String curClassName;
     private String curTextMessage;
+    private boolean unicode = false;
 
     public ZLogReader(String storagePath) throws IOException {
         this.storagePath = storagePath;
@@ -44,10 +48,14 @@ public class ZLogReader {
             tempStringBuffer[i] = new StringBuilder(LOG_MESSAGE_SIZE);
     }
 
+    public void setUnicode(boolean unicode) {
+        this.unicode = unicode;
+    }
+
     /**
      * Задать новый поиск
      */
-    public String[] search() {
+    public String[] search() throws UnsupportedEncodingException {
         // Выставляем маркер на начало
         reader.toStart();
         // Инициализируем параметры поиска
@@ -64,13 +72,13 @@ public class ZLogReader {
     /**
      * Продолжить последний поиск
      */
-    public String[] next() {
+    public String[] next() throws UnsupportedEncodingException {
         return search(pageSize);
     }
 
 
     public String[] search(long searchBeginTimestamp, long searchEndTimestamp, ZLogLevel searchLogLevel,
-                           String searchThreadName, String searchClassName, String searchTextMessage, int searchPageSize) {
+                           String searchThreadName, String searchClassName, String searchTextMessage, int searchPageSize) throws UnsupportedEncodingException {
         // Выставляем маркер на начало
         reader.toStart();
         // Инициализируем параметры поиска
@@ -87,7 +95,7 @@ public class ZLogReader {
         return search(pageSize);
     }
 
-    private String[] search(int linesAmount) {
+    private String[] search(int linesAmount) throws UnsupportedEncodingException {
         int readLogLine= 0;
         // Читаем, пока есть что читать
         while (readLogLine < linesAmount && reader.nextIndex()) {
@@ -97,8 +105,18 @@ public class ZLogReader {
             curThreadName = reader.readUTF();
             curClassName = reader.readUTF();
             tempSB.setLength(0);
-            while (reader.remaining() > 0)
-                tempSB.append(reader.readLine());
+            if (unicode) {
+                unicodeByteBuffer.clear();
+                while (reader.remaining() > 0)
+                    reader.read(unicodeByteBuffer);
+                unicodeByteBuffer.flip();
+                byte[] bytes = new byte[unicodeByteBuffer.remaining()];
+                unicodeByteBuffer.get(bytes);
+                tempSB.append(new String(bytes, "UTF-8"));
+            } else {
+                while (reader.remaining() > 0)
+                    tempSB.append(reader.readLine());
+            }
             curTextMessage = tempSB.toString();
             reader.finish();
             // Проверяем на удовлетворение условиям поиска

@@ -30,13 +30,14 @@ public class ZLogMain {
                     " -c\t\t\tНазвание класса. Обязательно полное имя без пакетов. Не фильтрует по части названия\n" +
                     " -m\t\t\tСообщение. Можно указывать часть сообщения или даже один символ\n" +
                     " -n\t\t\tКоличество записей, которые будут выданы. По умолчанию 50. Для получения всех записей указать 0\n" +
-                    " -onlycount\tВывести только количество найденных записей. Блокирует ключ -n");
+                    " -onlycount\tВывести только количество найденных записей. Блокирует ключ -n\n" +
+                    " -unicode\tЧитать лог-сообщения в unicode кодировке");
             return;
         }
 
         if (args[0].equals("--version")) {
             //TODO Нужно перенести и выводить из ресурсов
-            System.out.println("zlogger 1.1-SNAPSHOT");
+            System.out.println("zlogger 1.2-SNAPSHOT");
             return;
         }
 
@@ -58,6 +59,7 @@ public class ZLogMain {
         String message = "";
         int numMessages = 0;
         boolean onlyCount = false;
+        boolean unicode = false;
 
         try {
             if (args.length > 1) {
@@ -132,7 +134,7 @@ public class ZLogMain {
                 if (onlyCount)
                     System.out.printf("Найдено %d записей%n", n-1);
             }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             System.out.printf("Проблема с чтением данных из хранилища. %s.%n", ex.getMessage());
             System.out.println("Try `zlog --help' or `zlog --usage' for more information.");
             return;
