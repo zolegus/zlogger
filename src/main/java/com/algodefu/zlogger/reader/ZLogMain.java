@@ -37,7 +37,7 @@ public class ZLogMain {
 
         if (args[0].equals("--version")) {
             //TODO Нужно перенести и выводить из ресурсов
-            System.out.println("zlogger 1.2-SNAPSHOT");
+            System.out.println("zlogger 1.2.1-SNAPSHOT");
             return;
         }
 
@@ -69,12 +69,14 @@ public class ZLogMain {
                         // Парсим время начала
                         LocalDateTime dateTime = LocalDateTime.parse(args[++i], dtf);
                         beginTimestamp = dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+                        continue;
                     }
 
                     if (parameter.equals("-e")) {
                         // Парсим время конца
                         LocalDateTime dateTime = LocalDateTime.parse(args[++i], dtf);
                         endTimestamp = dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+                        continue;
                     }
 
                     if (parameter.equals("-l")) {
