@@ -107,6 +107,11 @@ public class ZLogMain {
                         onlyCount = true;
                         continue;
                     }
+                    if (parameter.equals("-unicode")) {
+                        // Количество записей
+                        unicode = true;
+                        continue;
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -117,6 +122,7 @@ public class ZLogMain {
 
         try {
             ZLogReader reader = new ZLogReader(BASE_PATH);
+            reader.setUnicode(unicode);
             String[] result = reader.search(beginTimestamp, endTimestamp, logLevel, threadName, className, message, 1);
             int n = 1;
             if (result.length == 0)
