@@ -50,7 +50,8 @@ public interface ZLogEntry extends Appendable {
      */
     <T> ZLogEntry append(Iterable<T> iterable, String separator);
 
-    ZLogEntry append(Throwable e);
+    //ZLogEntry append(Throwable e);
+    //TODO Throwable
 
     /**
      * appends an object using {@link com.algodefu.zlogger.alternative.ObjectFormatter} if it is available for object's class.
@@ -59,7 +60,8 @@ public interface ZLogEntry extends Appendable {
      * @param o
      * @return
      */
-    ZLogEntry append(Object o);
+    //TODO Object
+    //ZLogEntry append(Object o);
 
     /**
      * appends last a single char
