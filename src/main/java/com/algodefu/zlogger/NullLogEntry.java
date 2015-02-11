@@ -65,15 +65,15 @@ public class NullLogEntry implements ZLogEntry {
         return this;
     }
 
-    @Override
-    public ZLogEntry append(Throwable e) {
-        return this;
-    }
-
-    @Override
-    public ZLogEntry append(Object o) {
-        return this;
-    }
+//    @Override
+//    public ZLogEntry append(Throwable e) {
+//        return this;
+//    }
+//
+//    @Override
+//    public ZLogEntry append(Object o) {
+//        return this;
+//    }
 
     @Override
     public void appendLast(char c) {
