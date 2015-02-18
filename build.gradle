@@ -14,13 +14,13 @@ idea {
     }
 }
 
-version = '1.2'
+version = '1.3-SNAPSHOT'
 archivesBaseName = 'zlogger'
 mainClassName = "com.algodefu.zlogger.reader.ZLogMain"
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'zlogger', 'Implementation-Version': 1.2
+        attributes 'Implementation-Title': 'zlogger', 'Implementation-Version': 1.3
     }
 }
 
