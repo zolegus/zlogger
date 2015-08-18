@@ -27,6 +27,7 @@ public class ZLoggerFactoryTest extends TestCase {
             System.out.printf("Files %s removed\n", BASE_PATH);
     }
 
+    //UTF-8 cyrillic text messages
     @Test
     public void testSingleClass() throws Exception {
         final ZLogger logger = ZLoggerFactory.getLogger(ZLoggerFactoryTest.class);
